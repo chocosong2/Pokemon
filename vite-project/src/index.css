@@ -1,0 +1,28 @@
+@layer theme, custom-base, custom-components, custom-utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(custom-base);
+@import "tailwindcss/utilities.css" layer(custom-utilities);
+@theme {
+  --color-primary: #ffcb05;
+  --color-second: #3d7dca;
+  --color-third: #003a70;
+  --color-normal: #A8A77A;
+  --color-fire: #EE8130;
+  --color-water: #6390F0;
+  --color-electric: #f7dc30;
+  --color-grass: #7AC74C;
+  --color-ice: #97d4d2;
+  --color-fighting: #b83e3a;
+  --color-poison: #A33EA1;
+  --color-ground: #E2BF65;
+  --color-flying: #A98FF3;
+  --color-psychic: #F95587;
+  --color-bug: #A6B91A;
+  --color-rock: #B6A136;
+  --color-ghost: #735797;
+  --color-dragon: #6F35FC;
+  --color-dark: #705746;
+  --color-steel: #B7B7CE;
+  --color-fairy: #D685AD;
+  --color-none: #BFBFBF;
+}
