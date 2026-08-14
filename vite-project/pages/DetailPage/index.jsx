@@ -4,6 +4,12 @@ import {useParams,Link} from 'react-router-dom'
 import { Loading } from '../../src/assets/Loading';
 import { LessThan } from '../../src/assets/LessThan';
 import { GreaterThan } from '../../src/assets/GreaterThan';
+import {ArrowLeft} from '../../src/assets/ArrowLeft';
+import {Balance} from '../../src/assets/Balance';
+import {Vector} from '../../src/assets/Vector';
+import Type from '../../components/Type';
+import BaseStat from '../../components/BaseStat';
+import DamageRelations from '../../components/DamageRelations';
 
 const DetailPage = () => {
     const params = useParams();
@@ -75,7 +81,7 @@ const DetailPage = () => {
 
  const formatPokemonAbilities = (abilities) => {
     return abilities.filter((ability, index) => index <=1)
-                    .map((obj)=>{obj.ability.name.replaceAll('-',' ')}
+                    .map((obj)=>obj.ability.name.replaceAll('-',' ')
                 )
  }
 
@@ -130,6 +136,94 @@ async function getNextAndPreviousPokemon(id){
                     <GreaterThan className='w-5 h-8 p-1'/>
                 </Link>
             )}
+
+            <section className='w-full flex flex-col z-20 items-center justify-end relative h-full'>
+                <div className='absolute z-30 top-6 flex items-center w-full justify-between px-2'>
+                    <div className='flex items-center gap-1'>
+                        <Link to="/">
+                        <ArrowLeft className='w-6 h-8 text-zinc-200'/>
+                        </Link>
+                        <h1 className='text-zinc-200 font-bold text-xl capitalize '>
+                            {pokemon.name}
+                        </h1>
+                    </div>
+                    <div className='text-zinc-200 font-bold text-md'>
+                        #{pokemon.id.toString().padStart(3,'00')}
+                    </div>
+                </div>
+                <div className='relative h-auto max-w-[15.5rem] z-20 mt-6 -mb-16'>
+                    
+                    <img src={img} 
+                         alt={pokemon.name}
+                         width='100%'
+                         height='auto'
+                         loading='lazy'
+                         className={`object-contain h-full`}
+                         />
+                </div>
+            </section>
+            <section className='w-full min-h-[65%] h-full bg-gray-800 z-10 pt-14 flex flex-col items-center gap-3 px-5 pb-4'>
+                <div className='flex items-center justify-center gap-4'>
+                    {pokemon.types.map((type)=>(
+                        <Type key={type} type={type}/>
+                    ))}
+                </div>
+                <h2 className={`text-base font-semibold ${text}`}>
+                    정보
+                </h2>
+                <div className='flex w-full items-center justify-between max-w-[400px] text-center'>
+                    <div className='w-full '>
+                        <h4 className='text-[0.5rem] text-zinc-100'>Weight</h4>
+                        <div className='text-sm flex mt-1 gap-2 justify-center text-zinc-200 '>
+                            <Balance/>
+                            {pokemon.weight}kg
+                        </div>
+                    </div>
+                    <div className='w-full '>
+                        <h4 className='text-[0.5rem] text-zinc-100'>Weight</h4>
+                        <div className='text-sm flex mt-1 gap-2 justify-center text-zinc-200 '>
+                            <Vector/>
+                            {pokemon.height}m
+                        </div>
+                    </div>
+                    <div className='w-full '>
+                        <h4 className='text-[0.5rem] text-zinc-100'>Weight</h4>
+                            {pokemon.abilities.map((ability,index)=>(
+                                <div key={ability} className='text-[0.5rem] text-zinc-100 capitalize'>{ability}</div>
+                            ))}
+                        
+                    </div>
+                </div>
+                <h2 className={`text-base font-semibold ${text}`}>
+                    기본 능력치
+                </h2>
+                <div className='w-full'>
+                    <table>
+                        <tbody>
+                            {pokemon.stats.map((stat)=>(
+                                <BaseStat 
+                                    key={stat.name}
+                                    valueStat={stat.baseStat}
+                                    nameStat={stat.name}
+                                    type={pokemon.types[0]}
+                                />
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {pokemon.DamageRelations && (
+                    <div className='w-10/12'>
+                        <h2 className={`text-base text-center font-semibold ${text}`}>
+                            <DamageRelations
+                                damages={pokemon.DamageRelations}/>
+                        </h2>
+                    </div>
+                )}
+
+            </section>
+
+
         </div>
     </article>
   )
