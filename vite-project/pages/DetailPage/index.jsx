@@ -10,6 +10,7 @@ import {Vector} from '../../src/assets/Vector';
 import Type from '../../components/Type';
 import BaseStat from '../../components/BaseStat';
 import DamageRelations from '../../components/DamageRelations';
+import DamageModal from '../../components/DamageModal';
 
 const DetailPage = () => {
     const params = useParams();
@@ -19,7 +20,7 @@ const DetailPage = () => {
 
     const [pokemon, setPokemon] = useState();
     const [isLoading, setIsLoading] = useState(true);
-
+    const [isModalOpen, setIsModalOpen] = useState(false);
     useEffect(()=>{
         fetchPokeData();
     })
@@ -129,7 +130,7 @@ async function getNextAndPreviousPokemon(id){
                     <LessThan className='w-5 h-8 p-1'/>
                 </Link>
             )}
-            dddddddd
+            
             {pokemon.next && (
                 <Link className='absolute top-[40%] -translate-y-1/2 z-50 right-1'
                 to={`/pokemon/${pokemon.next}`}>
@@ -159,6 +160,7 @@ async function getNextAndPreviousPokemon(id){
                          height='auto'
                          loading='lazy'
                          className={`object-contain h-full`}
+                         onClick={()=>{setIsModalOpen(true)}}
                          />
                 </div>
             </section>
@@ -212,19 +214,20 @@ async function getNextAndPreviousPokemon(id){
                     </table>
                 </div>
 
-                {pokemon.DamageRelations && (
+                {/* {pokemon.DamageRelations && (
                     <div className='w-10/12'>
                         <h2 className={`text-base text-center font-semibold ${text}`}>
                             <DamageRelations
                                 damages={pokemon.DamageRelations}/>
                         </h2>
                     </div>
-                )}
+                )} */}
 
             </section>
-
-
         </div>
+        {isModalOpen && 
+                <DamageModal setIsModalOpen={setIsModalOpen} damages={pokemon.DamageRelations}
+                />}
     </article>
   )
 }
