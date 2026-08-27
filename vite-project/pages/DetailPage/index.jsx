@@ -19,17 +19,18 @@ const DetailPage = () => {
     //console.log(params.id);
 
     const [pokemon, setPokemon] = useState();
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     useEffect(()=>{
-        fetchPokeData();
-    })
-    async function fetchPokeData() {
-        const url = `${baseUrl}/${pokemonId}`
+        setIsLoading(true);
+        fetchPokeData(pokemonId);
+    },[pokemonId])
+    async function fetchPokeData(id) {
+        const url = `${baseUrl}/${id}`
     try {
         const {data:pokemonData} = await axios.get(url);
         if (pokemonData){
-            const {name,id,types,weight,height,stats,abilities} = pokemonData;
+            const {name,id,types,weight,height,stats,abilities, sprites} = pokemonData;
             const nextAndPreviousPokemon = await getNextAndPreviousPokemon(id);
             //console.log("next",nextAndPreviousPokemon)
             //console.log(formatPokemonAbilities(abilities));
@@ -51,7 +52,9 @@ const DetailPage = () => {
                 abilities:formatPokemonAbilities(abilities),
                 stats: formatPokemonStats(stats),
                 DamageRelations,
-                types:types.map(type=>type.type.name)
+                types:types.map(type=>type.type.name),
+                sprites:formatPokemonSprites(sprites),
+                description: await getPokemonDescription(id)
             }
             setPokemon(formattedPokemonData);
             setIsLoading(false);
@@ -63,6 +66,36 @@ const DetailPage = () => {
         setIsLoading(false);
     }
  }   
+
+const filterAndFormatDescription = (flavorText) => {
+    const koreanDescriptions = flavorText
+    ?.filter((text) => text.language.name === 'ko')
+    .map((text)=>text.flavor_text.replace(/\r|\n|\f/g, ' '))
+    //console.log('korean',koreanDescription)
+    return koreanDescriptions;  
+}
+
+
+const getPokemonDescription = async(id) => {
+    const url = `https://pokeapi.co/api/v2/pokemon-species/${id}/`
+
+    const {data : pokemonSpecies} = await axios.get(url)
+
+    const descriptions = filterAndFormatDescription(pokemonSpecies.flavor_text_entries)
+    return descriptions[Math.floor(Math.random() * descriptions.length)]
+}
+const formatPokemonSprites = (sprites) =>{
+    const newSprites = {...sprites};
+
+    Object.keys(newSprites).forEach(key=> {
+        if(typeof newSprites[key] !== 'string'){
+            delete newSprites[key];
+        }
+    })
+
+    return Object.values(newSprites)
+}
+
 
  const formatPokemonStats = ([
     statHP,
@@ -222,6 +255,21 @@ async function getNextAndPreviousPokemon(id){
                         </h2>
                     </div>
                 )} */}
+                <h2 className={`text-base font-semibold ${text}`}>
+                    설명
+                </h2>
+                <p className='text-md leading-4 font-sans text-zinc-200 max-w-[30rem] text-center'>
+                    {pokemon.description}
+                </p>
+                <div className='flex my-6 flex-wrap justify-center'>
+                    {pokemon.sprites.map((url,index)=> (
+                        <img
+                            key={index}
+                            src={url}
+                            alt='sprite'
+                        />
+                    ))}
+                </div>
 
             </section>
         </div>
